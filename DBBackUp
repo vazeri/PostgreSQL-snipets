@@ -1,0 +1,207 @@
+stubhub@stubhub-Aspire-E5-573:~$ ls
+accessControlApi.war         Documentos              Plantillas
+accessControlReports.tar.gz  Escritorio              Público
+access.war                   examples.desktop        reporte.csv
+Archive.zip                  Imágenes                reportes.csv
+backup                       init_access_contro.sql  Vídeos
+Descargas                    Música
+stubhub@stubhub-Aspire-E5-573:~$ sudo service tomcat8 stop
+stubhub@stubhub-Aspire-E5-573:~$ psql -h localhost -U access_control 
+access_control=> select * from zonas;
+stubhub@stubhub-Aspire-E5-573:~$ ls
+accessControlApi.war         access.war   backup     Documentos  examples.desktop  init_access_contro.sql  Plantillas  reporte.csv   Vídeos
+accessControlReports.tar.gz  Archive.zip  Descargas  Escritorio  Imágenes          Música                  Público     reportes.csv
+stubhub@stubhub-Aspire-E5-573:~$ cd backup
+stubhub@stubhub-Aspire-E5-573:~/backup$ cd 2018
+stubhub@stubhub-Aspire-E5-573:~/backup/2018$ ls
+backup_force_fest_after_event.sql  backup_force_fest_conf.sql
+stubhub@stubhub-Aspire-E5-573:~/backup/2018$ cd ..
+stubhub@stubhub-Aspire-E5-573:~/backup$ pg_dump -h localhost -U access_control -f respaldo20Feb2019.sql
+stubhub@stubhub-Aspire-E5-573:~/backup$ ls
+2018  current  respaldo20Feb2019.sql
+stubhub@stubhub-Aspire-E5-573:~/backup$ mv respaldo20Feb2019.sql ./2018
+stubhub@stubhub-Aspire-E5-573:~/backup$ ls
+2018  2019  current
+stubhub@stubhub-Aspire-E5-573:~/backup$ cd 2018
+stubhub@stubhub-Aspire-E5-573:~/backup/2018$ ls
+backup_force_fest_after_event.sql  backup_force_fest_conf.sql  respaldo20Feb2019.sql
+stubhub@stubhub-Aspire-E5-573:~/backup/2018$ psql -h localhost -U access_control 
+psql (9.5.14)
+SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+access_control=> select archive('FEB202019');
+ archive 
+---------
+       1
+(1 row)
+
+access_control=> truncate sesiones cascade;
+NOTICE:  truncate cascades to table "codigos"
+NOTICE:  truncate cascades to table "accesos"
+TRUNCATE TABLE
+access_control=> truncate zonas cascade;
+NOTICE:  truncate cascades to table "codigos"
+NOTICE:  truncate cascades to table "sector_zona"
+NOTICE:  truncate cascades to table "accesos"
+TRUNCATE TABLE
+
+access_control=> select * from configuracion;
+           propiedad           |                      valor                      
+-------------------------------+-------------------------------------------------
+ idioma_defecto                | es_ES
+ idiomas                       | es_ES#en_US
+ notificaciones                | vicente.vara@gmail.com
+ notificaciones_error          | vicente.vara@gmail.com
+ user_ws                       | adm
+ directorio.archivos           | /data/accessControl
+ is_access_control_main_server | false
+ nombre_aplicacion             | Stubhub Force
+ zona_horaria_base             | America/Mexico_City
+ url.base.api                  | https://mx.stubhubtickets.com/accessControlApi/
+ passwd_ws                     | WenTV76bdVwaTbRAA6
+ sessions_download_date        | 2019-02-20T13:16:46.405-06:00
+ barcodes_download_date        | 2019-02-20T13:18:17.855-06:00
+ venues                        | 567,568
+(14 rows)
+
+access_control=> update configuracion set valor='573' where propiedad = 'venues';
+UPDATE 1
+access_control=> select * from configuracion;
+           propiedad           |                      valor                      
+-------------------------------+-------------------------------------------------
+ idioma_defecto                | es_ES
+ idiomas                       | es_ES#en_US
+ notificaciones                | vicente.vara@gmail.com
+ notificaciones_error          | vicente.vara@gmail.com
+ user_ws                       | adm
+ directorio.archivos           | /data/accessControl
+ is_access_control_main_server | false
+ nombre_aplicacion             | Stubhub Force
+ zona_horaria_base             | America/Mexico_City
+ url.base.api                  | https://mx.stubhubtickets.com/accessControlApi/
+ passwd_ws                     | WenTV76bdVwaTbRAA6
+ sessions_download_date        | 2019-02-20T13:16:46.405-06:00
+ barcodes_download_date        | 2019-02-20T13:18:17.855-06:00
+ venues                        | 573
+(14 rows)
+                                                             ^
+access_control=> update configuracion set valor='2018-01-20T13:16:46.405-06:00' where propiedad='sessions_download_date';
+UPDATE 1
+access_control=> update configuracion set valor='2018-01-20T13:16:46.405-06:00' where propiedad='barcodes_download_date';
+UPDATE 1
+access_control=> select * from configuracion;
+           propiedad           |                      valor                      
+-------------------------------+-------------------------------------------------
+ idioma_defecto                | es_ES
+ idiomas                       | es_ES#en_US
+ notificaciones                | vicente.vara@gmail.com
+ notificaciones_error          | vicente.vara@gmail.com
+ user_ws                       | adm
+ directorio.archivos           | /data/accessControl
+ is_access_control_main_server | false
+ nombre_aplicacion             | Stubhub Force
+ zona_horaria_base             | America/Mexico_City
+ url.base.api                  | https://mx.stubhubtickets.com/accessControlApi/
+ passwd_ws                     | WenTV76bdVwaTbRAA6
+ venues                        | 573
+ sessions_download_date        | 2018-01-20T13:16:46.405-06:00
+ barcodes_download_date        | 2018-01-20T13:16:46.405-06:00
+(14 rows)
+
+access_control=> \q
+stubhub@stubhub-Aspire-E5-573:~/backup/2018$ sudo service tomcat8 start;
+[sudo] password for stubhub: 
+stubhub@stubhub-Aspire-E5-573:~/backup/2018$ psql -h localhost -U access_control 
+psql (9.5.14)
+SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+access_control=> select * from configuracion;
+           propiedad           |                      valor                      
+-------------------------------+-------------------------------------------------
+ idioma_defecto                | es_ES
+ idiomas                       | es_ES#en_US
+ notificaciones                | vicente.vara@gmail.com
+ notificaciones_error          | vicente.vara@gmail.com
+ user_ws                       | adm
+ directorio.archivos           | /data/accessControl
+ is_access_control_main_server | false
+ nombre_aplicacion             | Stubhub Force
+ zona_horaria_base             | America/Mexico_City
+ url.base.api                  | https://mx.stubhubtickets.com/accessControlApi/
+ passwd_ws                     | WenTV76bdVwaTbRAA6
+ venues                        | 573
+ sessions_download_date        | 2018-01-20T13:16:46.405-06:00
+ barcodes_download_date        | 2018-01-20T13:16:46.405-06:00
+(14 rows)
+
+access_control=> select * from configuracion;
+           propiedad           |                      valor                      
+-------------------------------+-------------------------------------------------
+ idioma_defecto                | es_ES
+ idiomas                       | es_ES#en_US
+ notificaciones                | vicente.vara@gmail.com
+ notificaciones_error          | vicente.vara@gmail.com
+ user_ws                       | adm
+ directorio.archivos           | /data/accessControl
+ is_access_control_main_server | false
+ nombre_aplicacion             | Stubhub Force
+ zona_horaria_base             | America/Mexico_City
+ url.base.api                  | https://mx.stubhubtickets.com/accessControlApi/
+ passwd_ws                     | WenTV76bdVwaTbRAA6
+ venues                        | 573
+ barcodes_download_date        | 2018-01-20T13:16:46.405-06:00
+ sessions_download_date        | 2019-02-20T13:57:14.639-06:00
+(14 rows)
+
+access_control=> select * from puertas_acceso;
+ id_puerta | lit_puerta | id_sector | id_sector_salida 
+-----------+------------+-----------+------------------
+         1 | Puerta 1   |         1 |                 
+         2 | Puerta 2   |         2 |                 
+         3 | Puerta 3   |         3 |                 
+         4 | Puerta 4   |         4 |                 
+         5 | Puerta 5   |         5 |                 
+(5 rows)
+
+access_control=> select * from sectores;
+ id_sector | lit_sector | aforo | id_nivel 
+-----------+------------+-------+----------
+         1 | Sector 1   |    50 |        1
+         2 | Sector 2   |    40 |        1
+         3 | Sector 3   |    20 |        1
+         4 | Sector 4   |    99 |        1
+         5 | Sector 5   |    99 |        1
+(5 rows)
+
+access_control=> select * from zonas;
+ id_zona | lit_zona  | aforo | orden | id_sala | lit_sala  | id_grupo_zonas | lit_grupo_zonas | orden_gz | excluir_estadisticas | id_recinto 
+---------+-----------+-------+-------+---------+-----------+----------------+-----------------+----------+----------------------+------------
+   23772 | Cancha    |  3451 |     1 |     819 | General   |           3039 | General         |        1 | f                    |        573
+   24002 | Gradas    |   736 |     2 |     819 | General   |           3039 | General         |        1 | f                    |        573
+   24003 | Palco     |   165 |     3 |     819 | General   |           3039 | General         |        1 | f                    |        573
+   24004 | Luneta    |   200 |     4 |     819 | General   |           3039 | General         |        1 | f                    |        573
+   24005 | Cortesias |   100 |     5 |     819 | General   |           3039 | General         |        1 | f                    |        573
+    -573 | Productos |     0 |     0 |    -573 | Productos |           -573 | Productos       |        0 | f                    |        573
+(6 rows)
+
+access_control=> select * from sector_zona;
+ id_zona | id_sector 
+---------+-----------
+(0 rows)
+
+access_control=> insert into sector_zona select id_zona,1 from zonas;
+INSERT 0 6
+\q
+stubhub@stubhub-Aspire-E5-573:~/backup$ ls
+2018  2019  current
+stubhub@stubhub-Aspire-E5-573:~/backup$ cd current
+stubhub@stubhub-Aspire-E5-573:~/backup/current$ ls
+backup_ramstein_nye_conf.sql
+stubhub@stubhub-Aspire-E5-573:~/backup/current$ pg_dump -h localhost -U access_control -f backup_revoluciontour_2019.sql
+stubhub@stubhub-Aspire-E5-573:~/backup/current$ ls
+backup_ramstein_nye_conf.sql  backup_revoluciontour_2019.sql
+stubhub@stubhub-Aspire-E5-573:~/backup/current$ mv backup_ramstein_nye_conf.sql ./2018
+stubhub@stubhub-Aspire-E5-573:~/backup/current$ ls
+2018  backup_revoluciontour_2019.sql
